@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 
-const clientId = import.meta.env.VITE_CLIENT_ID;
-const clientSecret = import.meta.env.VITE_CLIENT_SECRET;
+const clientId = import.meta.env.CLIENT_ID;
+const clientSecret = import.meta.env.CLIENT_SECRET;
 
 function AlbumSearchBar() {
   const [userInput, userUserInput] = useState("");
