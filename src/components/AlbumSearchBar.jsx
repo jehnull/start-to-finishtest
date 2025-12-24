@@ -3,6 +3,10 @@ import { useState, useEffect } from "react";
 const clientId = process.env.CLIENT_ID;
 const clientSecret = process.env.CLIENT_SECRET;
 
+const auth = Buffer
+  .from(`${clientId}:${clientSecret}`)
+  .toString("base64");
+
 function AlbumSearchBar() {
   const [userInput, userUserInput] = useState("");
   const [token, setToken] = useState("");
@@ -11,25 +15,25 @@ function AlbumSearchBar() {
     "Have you listened to these latest released albums?"
   );
 
-  useEffect(() => {
-    let authParams = {
+  const authParams = await fetch(
+    "https://accounts.spotify.com/api/token",
+    {
       method: "POST",
       headers: {
+        Authorization: `Basic ${auth}`,
         "Content-Type": "application/x-www-form-urlencoded",
       },
-      body:
-        "grant_type=client_credentials&client_id=" +
-        clientId +
-        "&client_secret=" +
-        clientSecret,
-    };
+      body: "grant_type=client_credentials",
+    }
+  );
 
-    fetch("https://accounts.spotify.com/api/token", authParams)
-      .then((result) => result.json())
-      .then((data) => {
-        setToken(data.access_token);
-      });
-  }, []);
+  useEffect(() => {
+  fetch("/api/spotify-token")
+    .then(res => res.json())
+    .then(data => {
+      setToken(data.access_token);
+    });
+}, []);
 
   useEffect(() => {
     if (!token) return;
